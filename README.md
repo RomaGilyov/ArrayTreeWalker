@@ -47,20 +47,20 @@ $tree = [
 $walker = new \RGilyov\ArrayTreeWalker($tree);
 ```
 
-To walk through tree structure use ->, to get value use ->get('name');
+To walk through tree structure use `->`, to get value use `->get('name')`;
 
 ```php
-echo $walker->parents->mother->parents->father->get('name') . '<br>'; // result: `first grand father`
+echo $walker->parents->mother->parents->father->get('name'); // result: `first grand father`
 ```
 
 You can also get value like so
 
 ```php
-echo $walker->parents->mother->parents->father['name'] . '<br>'; // result: `first grand father`
+echo $walker->parents->mother->parents->father['name']; // result: `first grand father`
 
-echo $walker->parents->mother->parents->father->name['name'] . '<br>'; // result: `first grand father`
+echo $walker->parents->mother->parents->father->name['name']; // result: `first grand father`
 
-echo $walker->parents->mother->parents->father->name->father['name'] . '<br>'; // result: null
+echo $walker->parents->mother->parents->father->name->father['name']; // result: null
 ```
 
 
