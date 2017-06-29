@@ -3,7 +3,7 @@
 ## Installation ##
 
 ```php
-composer rgilyov/array-tree-walker dev-master
+composer require rgilyov/array-tree-walker dev-master
 ```
 
 ## Description ##
