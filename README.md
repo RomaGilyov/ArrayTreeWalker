@@ -76,6 +76,38 @@ echo $walkerWithNodeName->father->father->mother['name']; // result: 'second gra
 echo $walkerWithNodeName->father->father->mother->mother['name']; // result: null
 ```
 
+You also can walk down the tree and walk up the tree and modify each node during walking:
+
+```php
+
+$walker = new \RGilyov\ArrayTreeWalker($tree, 'parents');
+
+/*
+ * If an array will be returned the values for given keys will be rewritten
+   and if keys didn't exist in the node they will be attached
+ */
+$walker->walkDown(function ($node, $level, $nodeNumber, $parentNodeNumber) {
+
+    return [
+        'level' => $level,
+        'node_number' => $nodeNumber,
+        'parent_node_number' => $parentNodeNumber
+    ];
+
+});
+
+$walker->walkUp(function ($node, $nodeChildren, $parameters, $level, $nodeNumber) {
+
+    return [
+        'super_name' => $node['name'] . ' ' . implode(array_map(function ($child) {
+            return $child['name'];
+        }, $nodeChildren), ' ')
+    ];
+
+});
+
+```
+
 List of available methods:
 
 ```php
