@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pedigrees;
+namespace RGilyov;
 
 use ArrayAccess;
 use Countable;
