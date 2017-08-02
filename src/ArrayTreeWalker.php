@@ -458,14 +458,16 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
 
             $leafsLevel = $level + 1;
 
-            foreach ($indexes as $index => $parentNodeNumber) {
-                $leafIndex = explode('.', $index);
+            if (is_array($indexes)) {
+                foreach ($indexes as $index => $parentNodeNumber) {
+                    $leafIndex = explode('.', $index);
 
-                $indexLevel     = (isset($leafIndex[0])) ? $leafIndex[0] : null;
-                $leafNodeNumber = (isset($leafIndex[1])) ? $leafIndex[1] : null;
+                    $indexLevel     = (isset($leafIndex[0])) ? $leafIndex[0] : null;
+                    $leafNodeNumber = (isset($leafIndex[1])) ? $leafIndex[1] : null;
 
-                if (($indexLevel == $leafsLevel) && ($parentNodeNumber == $nodeNumber)) {
-                    $leafs[] = $this->getNode($indexLevel, $leafNodeNumber);
+                    if (($indexLevel == $leafsLevel) && ($parentNodeNumber == $nodeNumber)) {
+                        $leafs[] = $this->getNode($indexLevel, $leafNodeNumber);
+                    }
                 }
             }
         }
