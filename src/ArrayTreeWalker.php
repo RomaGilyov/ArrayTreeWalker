@@ -7,7 +7,7 @@ use Countable;
 use IteratorAggregate;
 use ArrayIterator;
 
-class Tree implements ArrayAccess, Countable, IteratorAggregate
+class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var array
