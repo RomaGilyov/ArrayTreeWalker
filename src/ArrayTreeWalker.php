@@ -1,13 +1,13 @@
 <?php
 
-namespace RGilyov;
+namespace App\Pedigrees;
 
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
 
-class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
+class Tree implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var array
@@ -45,32 +45,13 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
      * @param string $bindingName
      * @param null $hash
      */
-    public function __construct($tree, $bindingName = null, $hash = null)
+    public function __construct($tree, $bindingName = 'edges', $hash = null)
     {
         $this->tree = method_exists($tree, 'toArray') ? $tree->toArray() : (array)$tree;
 
         $this->bindingName = $bindingName;
 
         $this->hash = is_string($hash) ? $hash : spl_object_hash($this);
-    }
-
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setBindingName($name)
-    {
-        $this->bindingName = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getBindingName()
-    {
-        return $this->bindingName;
     }
 
     /**
@@ -207,19 +188,6 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
     /////////////////////////////////////////// Tree aggregations ////////////////////////////////////
 
     /**
-     * @throws ArrayTreeWalkerException
-     */
-    public function checkBindingName()
-    {
-        if (!$this->bindingName) {
-            throw new ArrayTreeWalkerException(
-                'To use this functionality, set binding name (key containing edges)
-                 as the second constructor parameter or with setBindingName() method'
-            );
-        }
-    }
-
-    /**
      * @param $tree
      * @param \Closure $handler
      * @param int $level
@@ -228,10 +196,8 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function eachRecursive(&$tree, \Closure $handler, $level = 0, $parentNodeNumber = 0)
     {
-        $this->checkBindingName();
-
         if (! is_int($level) && ! is_int($parentNodeNumber)) {
-            throw new ArrayTreeWalkerException(
+            throw new \Exception(
                 'The `each` method expects only an integer for second and third arguments.
                  Never pass the parameters unless you want the all calculations work incorrectly.'
             );
@@ -287,10 +253,6 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
             $parentNodeNumber
         );
 
-        /*
-         * If array was returned, we will replace existing vales for keys
-         * and attach new key => values to current node
-         */
         if (is_array($result)) {
             $tree = array_replace($tree, $result);
         }
@@ -315,8 +277,7 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param $name
      * @param $arguments
-     * @return mixed
-     * @throws ArrayTreeWalkerException
+     * @return null
      */
     public static function __callStatic($name, $arguments)
     {
@@ -330,7 +291,7 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
             return $tree->{$name}();
         }
 
-        throw new ArrayTreeWalkerException('Method: ' . $name . ' does not exists.');
+        return null;
     }
 
     /**
@@ -338,8 +299,6 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
      */
     public function cutEdges()
     {
-        $this->checkBindingName();
-
         $tree = $this->toArray();
 
         if ($this->hasEdges()) {
@@ -354,8 +313,6 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
      */
     public function hasEdges()
     {
-        $this->checkBindingName();
-
         return isset($this->tree[$this->bindingName]) && is_array($this->tree[$this->bindingName]);
     }
 
@@ -395,8 +352,6 @@ class ArrayTreeWalker implements ArrayAccess, Countable, IteratorAggregate
      */
     public function treeLevels()
     {
-        $this->checkBindingName();
-
         if ($levels = $this->getMeta(static::LEVELS)) {
             return $levels;
         }
